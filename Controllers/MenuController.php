@@ -18,21 +18,27 @@ class MenuController
         $this->menu = new Menu($this->db);
     }
 
-    public function create()
+    public function index()
     {
-        echo "<pre>"; print_r($_POST); echo "</pre>"; die();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $stmt = $this->menu->getMenuJerarquico();
+        $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        include URL.'Views/index.php';
+    }
 
-            $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_STRING);
-            $descripcion = filter_input(INPUT_POST, 'descripcion', FILTER_SANITIZE_STRING);
+    public function menuNuevo()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Sanitizar los datos obtenidos desde el formulario
+            $nombre = htmlspecialchars($_POST["nombre"], ENT_QUOTES);
+            $descripcion = htmlspecialchars($_POST["descripcion"], ENT_QUOTES);
             $menuId = filter_input(INPUT_POST, 'menu_id', FILTER_VALIDATE_INT);
 
             // Validar datos del formulario
             $errors = [];
-            if (empty($name)) {
+            if (empty($nombre)) {
                 $errors[] = 'El nombre del menú es obligatorio.';
             }
-            if (empty($description)) {
+            if (empty($descripcion)) {
                 $errors[] = 'La descripción del menú es obligatoria.';
             }
 
@@ -46,8 +52,8 @@ class MenuController
             $this->menu->descripcion = $descripcion;
             $this->menu->menu_id = $menuId;
 
-            if ($this->menu->create()) {
-                header("Location: ../Views/listMenu.php");
+            if ($this->menu->menuNuevo()) {
+                header("Location: ".BASE_URL);
             } else {
                 echo "Error creating menu.";
             }
@@ -55,22 +61,43 @@ class MenuController
         include URL.'Views/edicion_menu.php';
     }
 
-    public function read()
+    public function menuListado()
     {
-        $stmt = $this->menu->read();
+        $stmt = $this->menu->getMenusListado();
         $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
         include URL.'Views/listado_menu.php';
     }
 
-    public function update()
+    public function menuActualizar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->menu->id = $_POST['id'];
-            $this->menu->name = $_POST['name'];
-            $this->menu->description = $_POST['description'];
-            $this->menu->parent_id = $_POST['parent_id'];
+            // Sanitizar los datos obtenidos desde el formulario
+            $idMenu = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+            $nombre = htmlspecialchars($_POST["nombre"], ENT_QUOTES);
+            $descripcion = htmlspecialchars($_POST["descripcion"], ENT_QUOTES);
+            $menuId = filter_input(INPUT_POST, 'menu_id', FILTER_VALIDATE_INT);
 
-            if ($this->menu->update()) {
+            // Validar datos del formulario
+            $errors = [];
+            if (empty($nombre)) {
+                $errors[] = 'El nombre del menú es obligatorio.';
+            }
+            if (empty($descripcion)) {
+                $errors[] = 'La descripción del menú es obligatoria.';
+            }
+
+            // Si hay errores, mostrar el formulario con mensajes de error
+            if (!empty($errors)) {
+                include URL.'Views/edicion_menu.php';
+                return;
+            }
+
+            $this->menu->id = $idMenu;
+            $this->menu->nombre = $nombre;
+            $this->menu->descripcion = $descripcion;
+            $this->menu->menu_id = $menuId;
+
+            if ($this->menu->menuActualizar()) {
                 header("Location: ../Views/listMenu.php");
             } else {
                 echo "Error updating menu.";
@@ -84,12 +111,12 @@ class MenuController
         }
     }
 
-    public function delete()
+    public function menuEliminar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->menu->id = $_POST['id'];
 
-            if ($this->menu->delete()) {
+            if ($this->menu->menuEliminar()) {
                 header("Location: ../Views/listMenu.php");
             } else {
                 echo "Error deleting menu.";

@@ -12,7 +12,7 @@ body {
 }
 
 .contenedor {
-    width: 768px;
+    width: 1200px;
     max-width: 100%;
 }
 
@@ -146,7 +146,7 @@ form {
         }
 
         input[type="text"],
-        select {
+        select, textarea {
             display: block;
             width: 100%;
             padding: .375rem .75rem;
@@ -169,6 +169,10 @@ form {
             background-size: 16px 12px;
         }
 
+        textarea {
+          resize: none;
+        }
+
         input[type="submit"]{
             cursor: pointer;
             font-family: inherit;
@@ -177,4 +181,10 @@ form {
             right: 0;
         }
     }
+}
+
+.menu {
+  display: flex;
+  padding: 0;
+  list-style: none;
 }

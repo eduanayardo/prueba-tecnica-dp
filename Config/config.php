@@ -30,3 +30,19 @@ define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8');
 
 define('URL_PUBLIC_FOLDER', 'public');
 define('URL_SUB_FOLDER', str_replace(URL_PUBLIC_FOLDER, '', dirname($_SERVER['SCRIPT_NAME'])));
+
+
+/**
+ * Obtener la URL base dinámica
+ *
+ * @return string URL base del proyecto
+ */
+function getBaseUrl() {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'];
+    $script = $_SERVER['SCRIPT_NAME'];
+    $path = str_replace(basename($script), '', $script);
+    return $protocol . $host . $path;
+}
+
+define('BASE_URL', getBaseUrl());

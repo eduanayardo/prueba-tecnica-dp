@@ -1,7 +1,7 @@
 <script>
     document.querySelectorAll('table.paginated').forEach(function (table) {
         var currentPage = 0;
-        var numPerPage = 3;
+        var numPerPage = 5;
 
         function repaginate() {
             var rows = table.querySelectorAll('tbody tr');

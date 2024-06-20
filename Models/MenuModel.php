@@ -2,7 +2,7 @@
 class Menu
 {
     private $conn;
-    private $nombre_table = "menus";
+    private $nombre_tabla = "menus";
 
     public $id;
     public $nombre;
@@ -14,13 +14,13 @@ class Menu
         $this->conn = $db;
     }
 
-    public function create()
+    public function menuNuevo()
     {
-        $query = "INSERT INTO " . $this->nombre_table . " (nombre, descripcion, menu_id) VALUES (:name, :descripcion, :menu_id)";
+        $query = "INSERT INTO {$this->nombre_tabla} (nombre, descripcion, menu_id) VALUES (:nombre, :descripcion, :menu_id)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":nombre", $this->nombre);
-        $stmt->bindParam(":descripdescripciontion", $this->descripcion);
+        $stmt->bindParam(":descripcion", $this->descripcion);
         $stmt->bindParam(":menu_id", $this->menu_id);
 
         if ($stmt->execute()) {
@@ -29,9 +29,9 @@ class Menu
         return false;
     }
 
-    public function read()
+    public function getMenusListado()
     {
-        $query = "SELECT * FROM " . $this->nombre_table;
+        $query = "SELECT {$this->nombre_tabla}.*, IFNULL(menu_padre.nombre, '---') padre FROM {$this->nombre_tabla} LEFT JOIN {$this->nombre_tabla} menu_padre  ON {$this->nombre_tabla}.menu_id = menu_padre.id ";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -39,16 +39,16 @@ class Menu
 
     public function getMenu()
     {
-        $query = "SELECT * FROM " . $this->nombre_table . " WHERE id = :id";
+        $query = "SELECT * FROM {$this->nombre_tabla} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $this->id);
         $stmt->execute();
         return $stmt;
     }
 
-    public function update()
+    public function menuActualizar()
     {
-        $query = "UPDATE " . $this->nombre_table . " SET nombre = :nombre, descripcion = :descripcion, menu_id = :menu_id WHERE id = :id";
+        $query = "UPDATE {$this->nombre_tabla} SET nombre = :nombre, descripcion = :descripcion, menu_id = :menu_id WHERE id = :id";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":nombre", $this->nombre);
@@ -62,9 +62,9 @@ class Menu
         return false;
     }
 
-    public function delete()
+    public function menuEliminar()
     {
-        $query = "DELETE FROM " . $this->nombre_table . " WHERE id = :id";
+        $query = "DELETE FROM {$this->nombre_tabla} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $this->id);
 
@@ -72,5 +72,47 @@ class Menu
             return true;
         }
         return false;
+    }
+
+    public function getMenuJerarquico() {
+        $query = "
+            WITH RECURSIVE menuJerarquico AS (
+                SELECT
+                    id,
+                    nombre,
+                    descripcion,
+                    menu_id,
+                    0 AS nivel
+                FROM
+                    {$this->nombre_tabla}
+                WHERE
+                    menu_id = 0
+                UNION ALL
+                SELECT
+                    m.id,
+                    m.nombre,
+                    m.descripcion,
+                    m.menu_id,
+                    mh.nivel + 1
+                FROM
+                    {$this->nombre_tabla} m
+                INNER JOIN
+                    menuJerarquico mh ON m.menu_id = mh.id
+            )
+            SELECT
+                id,
+                nombre,
+                descripcion,
+                menu_id,
+                nivel
+            FROM
+                menuJerarquico
+            ORDER BY
+                nivel, menu_id, id;
+        ";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
     }
 }
