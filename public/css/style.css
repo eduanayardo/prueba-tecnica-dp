@@ -1,0 +1,180 @@
+:root {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    --bg-color: #fbfbfb;
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.contenedor {
+    width: 768px;
+    max-width: 100%;
+}
+
+.titulo {
+    background-color: rgb(0, 116, 179);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    padding-block: 20px;
+    padding-inline-start: 10px;
+    position: relative;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid rgb(232, 232, 232);
+    color: #2e2e2e;
+    width: 100%;
+
+    thead {
+        background-color: rgba(232, 232, 232, 0.75);
+
+        th {
+            padding-block: 10px;
+            padding-inline-start: 10px;
+            text-align: left;
+
+            &:first-child {
+                width: 3%;
+            }
+
+            &:last-child {
+                width: 16%;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            &:nth-child(even) {
+                background-color: rgba(232, 232, 232, 0.75);
+
+                &:hover {
+                    background-color: rgb(232, 232, 232);
+                }
+            }
+
+            .zebra {
+                background-color: #f2f2f2;
+                /* Color para las filas zebra */
+            }
+
+            &:hover {
+                background-color: rgb(232, 232, 232);
+            }
+
+            td {
+                border: 1px solid rgb(232, 232, 232);
+                padding-block: 10px;
+                padding-inline-start: 10px;
+                text-align: left;
+
+                &:first-child {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+
+.boton {
+    background-color: #0eb600;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px;
+    position: absolute;
+    text-decoration: none;
+    right: 10px;
+
+    &:is(.editar, .eliminar) {
+        font-size: 0.875rem;
+        padding: 5px;
+        position: unset;
+    }
+
+    &.editar {
+        background-color: rgb(0, 116, 179);
+        margin-inline-end: 5px;
+    }
+
+    &.eliminar {
+        background-color: red;
+    }
+}
+
+div.pager {
+    text-align: right;
+    margin: 1em 0;
+
+    span {
+        display: inline-block;
+        width: 1.8em;
+        height: 1.8em;
+        line-height: 1.8;
+        text-align: center;
+        cursor: pointer;
+        background: #F5919B;
+        color: #000;
+        margin-right: 0.5em;
+
+        &.active {
+            background: #D14237;
+            color: #FFF;
+        }
+    }
+}
+
+form {
+    .grupo-form {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0.875rem;
+        position: relative;
+
+        label {
+            display: inline-block;
+            margin-block-start: .5rem;
+        }
+
+        input[type="text"],
+        select {
+            display: block;
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            appearance: none;
+            background-color: var(--bg-color);
+            background-clip: padding-box;
+            border: 1px solid #495057;
+            border-radius: 0.375rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+            background-repeat: no-repeat;
+            background-position: right .75rem center;
+            background-size: 16px 12px;
+        }
+
+        input[type="submit"]{
+            cursor: pointer;
+            font-family: inherit;
+            margin-inline-end: 0;
+            position: absolute;
+            right: 0;
+        }
+    }
+}
