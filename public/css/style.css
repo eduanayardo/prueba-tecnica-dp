@@ -20,9 +20,10 @@ header {
 }
 
 main {
-  margin: 2rem;
-  position: relative;
+    margin: 2rem;
+    position: relative;
 }
+
 h1 {
     float: left;
 }
@@ -99,13 +100,14 @@ table {
 }
 
 .botones {
-  display: block;
-  position: absolute;
-  right: 1rem;
-  .boton{
-    position: unset;
-    right: unset;
-  }
+    display: block;
+    position: absolute;
+    right: 1rem;
+
+    .boton {
+        position: unset;
+        right: unset;
+    }
 }
 
 .boton {
