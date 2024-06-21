@@ -1,8 +1,4 @@
 <?php
-
-// define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-// define('URL', ROOT . "");
-
 require_once URL.'/Config/Database.php';
 require_once URL.'/Models/MenuModel.php';
 
@@ -53,12 +49,18 @@ class MenuController
             $this->menu->menu_id = $menuId;
 
             if ($this->menu->menuNuevo()) {
-                header("Location: ".BASE_URL);
+                header("Location: ".BASE_URL."?accion=menuListado");
             } else {
-                echo "Error creating menu.";
+                header("Location: ".BASE_URL."?accion=menuNuevo&error=1");
             }
         }
         include URL.'Views/edicion_menu.php';
+    }
+
+    public function getMenus()
+    {
+        $stmt = $this->menu->getMenus();
+        $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function menuListado()
@@ -98,12 +100,11 @@ class MenuController
             $this->menu->menu_id = $menuId;
 
             if ($this->menu->menuActualizar()) {
-                header("Location: ../Views/listMenu.php");
+                header("Location: ".BASE_URL."?accion=menuListado");
             } else {
-                echo "Error updating menu.";
+                header("Location: ".BASE_URL."?accion=menuNuevo&error=2");
             }
         } else {
-            // echo "<pre>"; print_r($_GET); echo "</pre>"; die();
             $this->menu->id = $_GET['id'];
             $stmt = $this->menu->getMenu();
             $menu = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -113,13 +114,13 @@ class MenuController
 
     public function menuEliminar()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->menu->id = $_POST['id'];
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->menu->id = $_GET['id'];
 
             if ($this->menu->menuEliminar()) {
-                header("Location: ../Views/listMenu.php");
+                header("Location: ".BASE_URL."?accion=menuListado");
             } else {
-                echo "Error deleting menu.";
+                header("Location: ".BASE_URL."?accion=menuListado&error=3");
             }
         }
     }

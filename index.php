@@ -1,17 +1,16 @@
 <?php
 define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 define('URL', ROOT . "prueba-tecnica-dp/");
-// echo __DIR__;
+
 require_once URL . '/Config/config.php';
-// echo BASE_URL;
 require_once URL . 'Config/Database.php';
 require_once URL . 'Controllers/MenuController.php';
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$accion = isset($_GET['accion']) ? $_GET['accion'] : '';
 
 $controller = new MenuController();
 
-switch ($action) {
+switch ($accion) {
     case 'menuNuevo':
         $controller->menuNuevo();
         break;

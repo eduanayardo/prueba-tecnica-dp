@@ -29,6 +29,14 @@ class Menu
         return false;
     }
 
+    public function getMenus()
+    {
+        $query = "SELECT * FROM {$this->nombre_tabla}; ";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
     public function getMenusListado()
     {
         $query = "SELECT {$this->nombre_tabla}.*, IFNULL(menu_padre.nombre, '---') padre FROM {$this->nombre_tabla} LEFT JOIN {$this->nombre_tabla} menu_padre  ON {$this->nombre_tabla}.menu_id = menu_padre.id ";
@@ -64,14 +72,25 @@ class Menu
 
     public function menuEliminar()
     {
+        $this->actualizarHijos();
+
         $query = "DELETE FROM {$this->nombre_tabla} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
+
         $stmt->bindParam(":id", $this->id);
 
         if ($stmt->execute()) {
             return true;
         }
         return false;
+    }
+
+    private function actualizarHijos()
+    {
+        $query = "UPDATE {$this->nombre_tabla} SET menu_id = 0 WHERE menu_id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $this->id);
+        $stmt->execute();
     }
 
     public function getMenuJerarquico() {
